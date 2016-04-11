@@ -1,4 +1,4 @@
-#!usr/env python3
+#!/usr/bin/env python3
 
 # Jari Torniainen 2016
 # Quantified Employee, Finnish Institute of Occupational Health
