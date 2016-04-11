@@ -11,4 +11,4 @@ setup(name='event-logger',
       package_dir={'event-logger': 'event-logger'},
       include_package_data=False,
       entry_points={"console_scripts":
-                    ["event-logger = event-logger.event_logger:run_from_cli"]})
+                    ["event-logger = event-logger.event-logger:run_from_cli"]})
