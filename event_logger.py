@@ -64,7 +64,7 @@ def main(scr, filename='testing.log'):
 
         scr.clear()
         # Draw current log
-        scr.addstr(1, 2, 'EVENT LOGGER')
+        scr.addstr(1, 2, 'EVENT LOGGER ({})'.format(filename))
         print_event_list(scr, events)
         scr.addstr(9, 2, 'ENTER', curses.A_BOLD)
         scr.addstr(9, 8, 'Add event')
@@ -91,6 +91,6 @@ def main(scr, filename='testing.log'):
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
-        curses.wrapper(main)
+        curses.wrapper(main, sys.argv[1])
     else:
         print('event_logger.py needs filename as argument!')
