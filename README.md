@@ -1,4 +1,4 @@
 # event-logger
-Somekind of a curses-based logging tool with NTP timestamps
+Commandline (curses) based logging tool in Python!
 
-[![asciicast](https://asciinema.org/a/5n9s1mgyq6fzys8lrqc34ryft.png)](https://asciinema.org/a/5n9s1mgyq6fzys8lrqc34ryft)
+[![asciicast](https://asciinema.org/a/9kzr57x2u3uld3vjgtwq0u3su.png)](https://asciinema.org/a/9kzr57x2u3uld3vjgtwq0u3su)
