@@ -89,8 +89,11 @@ def main(scr, filename='testing.log'):
         scr.refresh()
 
 
-if __name__ == '__main__':
+def run_from_cli():
     if len(sys.argv) == 2:
         curses.wrapper(main, sys.argv[1])
     else:
-        print('event_logger.py needs filename as argument!')
+        print('event-logger needs filename as an argument!')
+
+if __name__ == '__main__':
+    run_from_cli()
