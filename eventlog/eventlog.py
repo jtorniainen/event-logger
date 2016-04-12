@@ -90,7 +90,7 @@ def main(scr, filename, ntp=False, append=False):
         with open(filename, 'w') as file:
             file.write('# {}\n'.format(start_time.strftime('%D-%T')))
             file.write('# NTP={} offset={:0.5f}\n'.format(ntp, offset))
-            file.write('# timestamp,event\n')
+            file.write('# timestamp;event\n')
 
     while running:
 
@@ -114,7 +114,7 @@ def main(scr, filename, ntp=False, append=False):
             events.append((timestamp, event_description))
             # Write new event to file
             with open(filename, 'a') as file:
-                file.write('{},{}\n'.format(iso(timestamp), event_description))
+                file.write('{};{}\n'.format(iso(timestamp), event_description))
         elif key == KEY_Q:  # Quit
             running = False
         scr.refresh()
