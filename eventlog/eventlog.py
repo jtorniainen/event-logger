@@ -9,6 +9,7 @@ import datetime
 import ntplib
 import argparse
 import os
+import sys
 
 
 def iso(timestamp):
@@ -121,6 +122,9 @@ def main(scr, filename, ntp=False, append=False):
 
 def run_from_cli():
     """ Run eventlog from the command line. """
+
+    if sys.version_info < (3, 0):
+        input = raw_input
 
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', help='filename for the logfile')
