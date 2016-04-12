@@ -12,7 +12,14 @@ import os
 
 
 def iso(timestamp):
-    """ Convert timestamp to Colibri-ISO format """
+    """ Convert timestamp to Colibri-ISO format
+
+    Args:
+        timestamp: datetime timestamp
+
+    Returns:
+        time_str: ISO-formatted timestamp string
+    """
 
     time_str = timestamp.isoformat()
     time_str = time_str.replace('-', '')
@@ -21,7 +28,12 @@ def iso(timestamp):
 
 
 def print_event_list(scr, events):
-    """ Prints last 4 events to screen. """
+    """ Prints the last four events to screen.
+
+    Args:
+        scr: curses screen
+        events: list of logged events
+    """
 
     for line, event in enumerate(events[-4:]):
         time_str = '[{}]'.format(event[0].strftime('%H:%M:%S'))
@@ -34,7 +46,7 @@ def print_event_list(scr, events):
         scr.addstr(line + 3, 3 + len(time_str), event_str)
 
 
-def get_input(scr, timestamp):
+def add_entry(scr, timestamp):
     curses.echo()
     scr.clear()
     scr.addstr(2, 2, 'Enter new event:')
@@ -47,6 +59,14 @@ def get_input(scr, timestamp):
 
 
 def main(scr, filename, ntp=False, append=False):
+    """ eventlog main
+
+    Args:
+        scr: curses screen (from wrapper)
+        filename: output filename
+        ntp: ntp server address (optional)
+        append: append to existing file (optional)
+    """
 
     running = True
     start_time = datetime.datetime.now()
@@ -89,7 +109,7 @@ def main(scr, filename, ntp=False, append=False):
             # Get as accurate time stamp as possible
             timestamp = datetime.datetime.now()
             timestamp += datetime.timedelta(seconds=offset)
-            event_description = get_input(scr, timestamp)
+            event_description = add_entry(scr, timestamp)
             events.append((timestamp, event_description))
             # Write new event to file
             with open(filename, 'a') as file:
@@ -100,6 +120,8 @@ def main(scr, filename, ntp=False, append=False):
 
 
 def run_from_cli():
+    """ Run eventlog from the command line. """
+
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', help='filename for the logfile')
     parser.add_argument('-n', '--ntp', help='specify the NTP server', type=str)
@@ -112,6 +134,12 @@ def run_from_cli():
     if not arguments.append and os.path.isfile(arguments.filename):
         if input('Warning: File exists, overwrite? [y/n]: ') != 'y':
             return
+
+    # Check if were are trying to append to a non-existing file
+    if arguments.append and not os.path.isfile(arguments.filename):
+        print('Error: Trying to append to a non-existing file!')
+        return
+
     curses.wrapper(main, arguments.filename, arguments.ntp, arguments.append)
 
 if __name__ == '__main__':
