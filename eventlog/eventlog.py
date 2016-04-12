@@ -6,7 +6,8 @@
 
 import curses
 import datetime
-import sys
+import ntplib
+import argparse
 
 
 def iso(timestamp):
@@ -44,27 +45,34 @@ def get_input(scr, timestamp):
     return event_description.decode('utf-8')
 
 
-def main(scr, filename='testing.log'):
-
-    # Write header for log-file (also removes existing entries)
-    with open(filename, 'w') as file:
-        file.write('Session started: {}\n'.format(datetime.datetime.now()))
-        file.write('timestamp,event\n')
+def main(scr, filename, ntp=False):
 
     running = True
     key = 0
     KEY_ENTER = 10
     KEY_Q = 113
-    # KEY_ESC = ?
 
     events = []
     curses.curs_set(0)
+
+    if ntp:
+        client = ntplib.NTPClient()
+        request = client.request(ntp)
+        offset = request.offset
+    else:
+        offset = 0
+
+    # Write header for log-file (also removes existing entries)
+    with open(filename, 'w') as file:
+        file.write('# {}\n'.format(datetime.datetime.now().strftime('%D-%T')))
+        file.write('# NTP={} offset={:0.5f}\n'.format(ntp, offset))
+        file.write('# timestamp,event\n')
 
     while running:
 
         scr.clear()
         # Draw current log
-        scr.addstr(1, 2, 'EVENT LOGGER ({})'.format(filename))
+        scr.addstr(1, 2, 'EVENTLOG ({})'.format(filename))
         print_event_list(scr, events)
         scr.addstr(9, 2, 'ENTER', curses.A_BOLD)
         scr.addstr(9, 8, 'Add event')
@@ -77,6 +85,8 @@ def main(scr, filename='testing.log'):
         if key == KEY_ENTER:  # Add entry
             # Get as accurate time stamp as possible
             timestamp = datetime.datetime.now()
+            if ntp:
+                timestamp += datetime.timedelta(seconds=offset)
             event_description = get_input(scr, timestamp)
             events.append((timestamp, event_description))
             # Write new event to file
@@ -90,10 +100,11 @@ def main(scr, filename='testing.log'):
 
 
 def run_from_cli():
-    if len(sys.argv) == 2:
-        curses.wrapper(main, sys.argv[1])
-    else:
-        print('event-logger needs filename as an argument!')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', help='filename for the logfile')
+    parser.add_argument('-n', '--ntp', help='specify the NTP server')
+    arguments = parser.parse_args()
+    curses.wrapper(main, arguments.filename, arguments.ntp)
 
 if __name__ == '__main__':
     run_from_cli()
