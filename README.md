@@ -13,9 +13,7 @@ Usage
 -----
 To start a logging session you only need to specify a filename for the resulting logfile.
 
-	```
-	eventlog FILENAME
-	```
+	`eventlog FILENAME`
 
 To resume an existing log you can use the `--append` option
 
