@@ -81,9 +81,12 @@ def main(scr, filename, ntp=False, append=False):
     offset = 0
 
     if ntp:
-        client = ntplib.NTPClient()
-        request = client.request(ntp)
-        offset = request.offset
+        try:
+            client = ntplib.NTPClient()
+            request = client.request(ntp)
+            offset = request.offset
+        except ntplib.socket.gaierror:
+            print('Warning: Could not connect to NTP-server!')
 
     if not append:
         # Write header for log-file (also removes existing entries)
