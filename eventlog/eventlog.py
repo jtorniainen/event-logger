@@ -81,12 +81,9 @@ def main(scr, filename, ntp=False, append=False):
     offset = 0
 
     if ntp:
-        try:
-            client = ntplib.NTPClient()
-            request = client.request(ntp)
-            offset = request.offset
-        except ntplib.socket.gaierror:
-            print('Warning: Could not connect to NTP-server!')
+        client = ntplib.NTPClient()
+        request = client.request(ntp)
+        offset = request.offset
 
     if not append:
         # Write header for log-file (also removes existing entries)
@@ -146,6 +143,8 @@ def run_from_cli():
     if arguments.append and not os.path.isfile(arguments.filename):
         print('Error: Trying to append to a non-existing file!')
         return
+
+    # TODO: Check if the ntp server exists
 
     curses.wrapper(main, arguments.filename, arguments.ntp, arguments.append)
 
